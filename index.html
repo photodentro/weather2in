@@ -1,0 +1,178 @@
+<!doctype html> 
+<!-- Copyright (C) 2018 Alkis Georgopoulos <alkisg@gmail.com>. License: GPLv3. -->
+<html lang="el"> 
+<head> 
+  <meta charset="UTF-8" />
+  <!-- Using this metatag users can't scale the page using pinchIn/out gestures on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Παιχνίδι μνήμης</title> 
+  <!--REMEMEBER TO RESTORE
+  <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>-->
+  <script src="createjs-2015.11.26.min.js"></script>  
+  <style type="text/css">
+    /* Remove margins and HTML scrollbars */
+    body, html  {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: black;
+    }
+    #mainCanvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    }
+  </style>
+</head>
+<body onload = "init();">
+  <canvas id="mainCanvas" width="320" height="180">
+    Your browser doesn't support HTML5!
+  </canvas>
+<script>
+  var stage;
+  var resourceNames = ["background","bar_help","bar_home", "bar_previous", "bar_next"];
+  var resourcesLoaded = 0;
+  var resources = [];
+  var ratio = 16/9;
+  var winratio;
+  var boxl;
+  var boxr;
+  var menubar = [];
+  var lvlText = "1";
+  var level = 0; 
+  var bg;
+
+
+  function init(){
+    console.clear();
+    stage = new createjs.Stage("mainCanvas");
+    stage.enableMouseOver();
+    
+    // Resource preloading
+    for (var i = 0; i < resourceNames.length; i++) {
+
+      resources[i] = new Image();
+      resources[i].src = "resource/" + resourceNames[i] + ".svg";
+      resources[i].onload = queueFileLoad;
+
+    }
+    // The last queueFileLoad calls queueComplete. Execution continues there.
+
+  }
+
+function imgByName(name) {
+  return resources[resourceNames.indexOf(name)];
+}
+
+function queueFileLoad(event) {
+  resourcesLoaded++;
+  stage.update();
+  if (resourcesLoaded == resourceNames.length)
+    queueComplete(event);
+}
+
+function queueComplete(event) {
+  console.log("Finished loading resources");
+  bg = new createjs.Bitmap(imgByName("background"));
+  stage.addChild(bg);
+  
+  var onMenuClick = [onMenuHelp, onMenuHome, onMenuPrevious, onMenuNext];
+  for (i = 0; i < 4; i++) {
+
+    menubar[i] = new createjs.Bitmap(resources[resourceNames.indexOf('bar_help')+i]);
+    menubar[i].addEventListener("click", onMenuClick[i]);
+    menubar[i].addEventListener("mouseover", function(event) {
+        // Bring the target on top in its container, mostly for the rotation animation
+        event.target.parent.setChildIndex(event.target, event.target.parent.numChildren - 1);
+        event.target.scaleX = 1.2*event.target.savedscaleX;
+        event.target.scaleY = 1.2*event.target.savedscaleY;
+        stage.update();});
+    menubar[i].addEventListener("mouseout", function(event) {
+        event.target.scaleX = event.target.savedscaleX;
+        event.target.scaleY = event.target.savedscaleY;
+        stage.update();});
+    stage.addChild(menubar[i]);
+    
+  }
+  lvlText = new createjs.Text("1", "20px Arial", "white");
+  lvlText.textAlign = "center";
+  lvlText.textBaseline = "middle";
+  stage.addChild(lvlText);
+
+  stage.update();
+  initLevel(0);
+  resize();
+  window.addEventListener('resize', resize, false);
+}
+
+function initLevel(newLevel) {
+}
+
+function resize() {
+  // Resize the canvas element
+  winratio = window.innerWidth/window.innerHeight;
+  if (winratio >= ratio) {
+    stage.canvas.height = window.innerHeight;
+    stage.canvas.width = stage.canvas.height * ratio;
+  } else {
+    stage.canvas.width = window.innerWidth;
+    stage.canvas.height = stage.canvas.width / ratio;
+  }
+  var bbs = stage.canvas.height / 10;  // bar button size
+
+  var bbm = bbs / 5;  // bar button margin
+  // TODO: local/global variables, eslint...
+  for (i = 0; i < 4; i++) {
+    // Leave one space for the level
+    if (i < 3)
+      j = i;
+    else
+      j = i + 1;
+    menubar[i].scaleX = bbs / menubar[i].image.width;
+    menubar[i].scaleY = bbs / menubar[i].image.height;
+    menubar[i].regX = menubar[i].image.width / 2;
+    menubar[i].regY = menubar[i].image.height / 2;
+    menubar[i].x = (j + 1)*bbm + bbs/2 + j*bbs;
+    menubar[i].y = stage.canvas.height - bbm - bbs/2;
+    menubar[i].visible = true;
+    // These copies are used to preserve the original scale on mouseover
+    menubar[i].savedscaleX = menubar[i].scaleX;
+    menubar[i].savedscaleY = menubar[i].scaleY;
+  }
+
+  lvlText.text = level + 1;
+  lvlText.x = (3 + 1)*bbm + bbs/2 + 3*bbs;
+  lvlText.y = stage.canvas.height - bbm/2 - bbs/2;
+  lvlText.font = parseInt(2*bbs/2) + "px Arial";
+
+  // Fill all the canvas with the background
+  bg.scaleX = stage.canvas.width / bg.image.width;
+  bg.scaleY = stage.canvas.height / bg.image.height;
+  stage.update();
+}
+
+
+function onMenuHelp(event) {
+  alert("Επιλέξτε εικόνες από το κάτω κουτί και βάλτε τις στο δεξί κουτί έτσι ώστε να ταιριάζουν με το αριστερό κουτί.");
+}
+
+function onMenuHome(event) {
+  window.history.back();
+}
+
+function onMenuPrevious(event) {
+  initLevel((level+4) % 5);
+}
+
+function onMenuNext(event) {
+  initLevel((level+1) % 5);
+}
+
+</script>
+</body>
+</html>
