@@ -6,9 +6,7 @@
   <!-- Using this metatag users can't scale the page using pinchIn/out gestures on mobile devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <title>Παιχνίδι μνήμης</title> 
-  <!--REMEMEBER TO RESTORE
-  <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>-->
-  <script src="createjs-2015.11.26.min.js"></script>  
+  <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
   <style type="text/css">
     /* Remove margins and HTML scrollbars */
     body, html  {
@@ -35,7 +33,9 @@
   </canvas>
 <script>
   var stage;
-  var resourceNames = ["background","bar_help","bar_home", "bar_previous", "bar_next"];
+  var resourceNames = ['bar_home.svg', 'bar_help.svg', 'bar_about.svg', 'bar_previous.svg', 'bar_next.svg', 'weather0.png',
+  'weather1.png', 'weather2.png', 'weather3.png', 'weather4.png', 'day0.png', 'day1.png', 'day2.png', 'day3.png', 'day4.png', 
+  'day5.png', 'day6.png'];
   var resourcesLoaded = 0;
   var resources = [];
   var ratio = 16/9;
@@ -46,18 +46,35 @@
   var lvlText = "1";
   var level = 0; 
   var bg;
-
-
+  var statusText;
+  var whiteBox = new createjs.Shape();
+  var grid = new createjs.Shape();
+  var weatherImgs = [];
+  var daysImgs = [];
+  var twoInputData = [[0,0,0,0,0],
+                      [0,0,0,0,0],
+                      [0,0,0,0,0],
+                      [0,0,0,0,0],
+                      [0,0,0,0,0],
+                      [0,0,0,0,0]];                      
   function init(){
     console.clear();
     stage = new createjs.Stage("mainCanvas");
     stage.enableMouseOver();
-    
+    stage.on('click',function(event){
+    	console.log(event.stageX,event.stageY);
+    });
+
+    statusText = new createjs.Text("Φόρτωση...", "20px Arial", "white");
+  	statusText.textAlign = "center";
+  	statusText.textBaseline = "middle";
+  	stage.addChild(statusText);
+  	resize();
     // Resource preloading
     for (var i = 0; i < resourceNames.length; i++) {
 
       resources[i] = new Image();
-      resources[i].src = "resource/" + resourceNames[i] + ".svg";
+      resources[i].src = "resource/" + resourceNames[i];
       resources[i].onload = queueFileLoad;
 
     }
@@ -71,39 +88,50 @@ function imgByName(name) {
 
 function queueFileLoad(event) {
   resourcesLoaded++;
+  statusText.text = "Φόρτωση " + parseInt(100*resourcesLoaded/resourceNames.length) + " %";  
   stage.update();
-  if (resourcesLoaded == resourceNames.length)
+  if (resourcesLoaded == resourceNames.length)  	
     queueComplete(event);
 }
 
 function queueComplete(event) {
   console.log("Finished loading resources");
-  bg = new createjs.Bitmap(imgByName("background"));
+  statusText.visible = false;
+  bg = new createjs.Shape();
   stage.addChild(bg);
-  
-  var onMenuClick = [onMenuHelp, onMenuHome, onMenuPrevious, onMenuNext];
-  for (i = 0; i < 4; i++) {
-
-    menubar[i] = new createjs.Bitmap(resources[resourceNames.indexOf('bar_help')+i]);
+  var onMenuClick = [onMenuHome, onMenuHelp, onMenuAbout, onMenuPrevious, onMenuNext];
+  for (i = 0; i < 5; i++) {
+    menubar[i] = new createjs.Bitmap(resources[resourceNames.indexOf('bar_home.svg') + i]);
     menubar[i].addEventListener("click", onMenuClick[i]);
     menubar[i].addEventListener("mouseover", function(event) {
-        // Bring the target on top in its container, mostly for the rotation animation
-        event.target.parent.setChildIndex(event.target, event.target.parent.numChildren - 1);
-        event.target.scaleX = 1.2*event.target.savedscaleX;
-        event.target.scaleY = 1.2*event.target.savedscaleY;
-        stage.update();});
+      // Bring the target on top in its container, mostly for the rotation animation
+      event.target.parent.setChildIndex(event.target, event.target.parent.numChildren - 1);
+      event.target.scaleX = 1.2*event.target.savedscaleX;
+      event.target.scaleY = 1.2*event.target.savedscaleY;
+      stage.update();
+      });
     menubar[i].addEventListener("mouseout", function(event) {
-        event.target.scaleX = event.target.savedscaleX;
-        event.target.scaleY = event.target.savedscaleY;
-        stage.update();});
+      event.target.scaleX = event.target.savedscaleX;
+      event.target.scaleY = event.target.savedscaleY;
+      stage.update();
+      });
     stage.addChild(menubar[i]);
-    
   }
+
   lvlText = new createjs.Text("1", "20px Arial", "white");
   lvlText.textAlign = "center";
   lvlText.textBaseline = "middle";
   stage.addChild(lvlText);
 
+  for (var i=0; i<5; i++){
+  	weatherImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('weather0.png')+i]);
+  	stage.addChild(weatherImgs[i]);
+  }
+
+  for (var i=0; i<6; i++){
+  	daysImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('day0.png')+i]);
+  	stage.addChild(daysImgs[i]);
+  }
   stage.update();
   initLevel(0);
   resize();
@@ -123,13 +151,21 @@ function resize() {
     stage.canvas.width = window.innerWidth;
     stage.canvas.height = stage.canvas.width / ratio;
   }
-  var bbs = stage.canvas.height / 10;  // bar button size
 
+  if (!menubar[4]) {
+    statusText.x = stage.canvas.width / 2;
+    statusText.y = stage.canvas.height / 2;
+    statusText.font = parseInt(stage.canvas.height/10) + "px Arial";
+    return;
+  }
+  // Fill all the canvas with the background
+  bg.graphics.beginFill("#970A5F").drawRect(0,0,stage.canvas.width,stage.canvas.height);
+  var bbs = stage.canvas.height / 10;  // bar button size
   var bbm = bbs / 5;  // bar button margin
   // TODO: local/global variables, eslint...
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < 5; i++) {
     // Leave one space for the level
-    if (i < 3)
+    if (i < 4)
       j = i;
     else
       j = i + 1;
@@ -139,26 +175,89 @@ function resize() {
     menubar[i].regY = menubar[i].image.height / 2;
     menubar[i].x = (j + 1)*bbm + bbs/2 + j*bbs;
     menubar[i].y = stage.canvas.height - bbm - bbs/2;
-    menubar[i].visible = true;
     // These copies are used to preserve the original scale on mouseover
     menubar[i].savedscaleX = menubar[i].scaleX;
     menubar[i].savedscaleY = menubar[i].scaleY;
   }
 
   lvlText.text = level + 1;
-  lvlText.x = (3 + 1)*bbm + bbs/2 + 3*bbs;
+  lvlText.x = (4 + 1)*bbm + bbs/2 + 4*bbs;
   lvlText.y = stage.canvas.height - bbm/2 - bbs/2;
   lvlText.font = parseInt(2*bbs/2) + "px Arial";
 
-  // Fill all the canvas with the background
-  bg.scaleX = stage.canvas.width / bg.image.width;
-  bg.scaleY = stage.canvas.height / bg.image.height;
+  // If level is single digit, move lvlText and bar_previous a bit left
+  if (level + 1 < 10) {
+    lvlText.x -= bbs/4;
+    menubar[4].x -= bbs/2;
+  }
+
+  
+  // Bring statusText in front of everything
+  statusText.textAlign = "right";
+  statusText.textBaseline = "alphabetic";
+  stage.setChildIndex(statusText, stage.numChildren - 1);
+
+  var hmargin = 10 / 1120 * stage.canvas.width;
+ 
+  whiteBox.graphics.clear();
+  //shadow
+  whiteBox.graphics.beginFill('#222222').drawRoundRect(3/2*hmargin,3/2*hmargin,stage.canvas.width / 2 - 2*hmargin, stage.canvas.height - bbs - 3 * hmargin, hmargin);
+
+  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 2*hmargin, stage.canvas.height - bbs - 3 * hmargin, hmargin);
+  
+  stage.addChild(whiteBox);
+
+
+  var weatherTargetWidth = 80 / 1120 * stage.canvas.width;
+  var weatherScale = weatherTargetWidth / weatherImgs[0].image.width;
+  var weatherTargetHeight = weatherImgs[0].image.height * weatherScale;
+
+  var daysTargetWidth = 64 / 1120 * stage.canvas.width;
+  var daysScale = daysTargetWidth / daysImgs[0].image.width;
+  var daysTargetHeight = daysImgs[0].image.height * daysScale;
+
+
+  grid.graphics.clear();
+  for (var i = 0; i < 7; i++){
+  	var startingY = 2 * hmargin + weatherTargetHeight;
+  	var startingX = hmargin;
+  	var spacing = weatherTargetHeight - 0.6 * hmargin;
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX,startingY + i * spacing).lineTo(stage.canvas.width / 2 - hmargin,startingY + i *spacing).endStroke();
+  }
+  for (var i = 0; i < 6; i++){
+  	var startingY = hmargin;
+  	var startingX = daysTargetWidth + 3 * hmargin;
+  	spacing = weatherTargetHeight + hmargin;
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacing,startingY).lineTo(startingX + i * spacing,stage.canvas.height - bbs - 2 * hmargin).endStroke();
+  }  	
+  stage.addChild(grid);
+
+  
+  for (var i=0; i<5; i++){
+  	weatherImgs[i].scaleX = weatherScale;
+  	weatherImgs[i].scaleY = weatherScale;
+  	weatherImgs[i].x = hmargin + (i+1)*(weatherTargetWidth+hmargin);
+  	weatherImgs[i].y = hmargin;
+  	stage.addChild(weatherImgs[i]);
+  }
+
+  
+  for (var i=0; i<6; i++){
+  	daysImgs[i].scaleX = daysScale;
+  	daysImgs[i].scaleY = daysScale;
+  	daysImgs[i].x = 2 * hmargin;
+  	daysImgs[i].y = 3 * hmargin + (i+1)*(daysTargetHeight+hmargin);
+  	stage.addChild(daysImgs[i]);
+  }
+
+  //grid.graphics.clear();
+
   stage.update();
 }
 
 
 function onMenuHelp(event) {
-  alert("Επιλέξτε εικόνες από το κάτω κουτί και βάλτε τις στο δεξί κουτί έτσι ώστε να ταιριάζουν με το αριστερό κουτί.");
+  alert("Κάντε κλικ στον πίνακα και μετά πατήστε το κουμπί για το γράφημα.");
 }
 
 function onMenuHome(event) {
@@ -171,6 +270,10 @@ function onMenuPrevious(event) {
 
 function onMenuNext(event) {
   initLevel((level+1) % 5);
+}
+
+function onMenuAbout(event) {
+  window.open("credits/index_DS_II.html");
 }
 
 </script>
