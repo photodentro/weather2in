@@ -56,13 +56,64 @@
                       [0,0,0,0,0],
                       [0,0,0,0,0],
                       [0,0,0,0,0],
-                      [0,0,0,0,0]];                      
+                      [0,0,0,0,0],
+                      [0,0,0,0,0]];
+  //global to find stage click square
+  var gridStartingX;
+  var gridStartingY;
+  var spacingX;
+  var spacingY;
+
+  var xGrid = new createjs.Shape();
+
+  function inSquare(i,j,x,y){
+	var squareXLeft  = gridStartingX + j * spacingX;
+	var squareXRight = gridStartingX + (j+1) * spacingX;
+	var squareYUp = gridStartingY + i * spacingY;
+	var squareYDown = gridStartingY + (i+1) * spacingY;
+	if ((x > squareXLeft) && 		
+		(x < squareXRight) && 		
+		(y > squareYUp)  && 		
+		(y < squareYDown)){
+			return(true);
+	}
+	else{
+		return(false);
+	}
+  }
+
+  function drawXGrid(){
+  	xGrid.graphics.clear();
+   	for (var i=0; i<7; i++){
+   		for (var j=0; j<5; j++){
+   			if (twoInputData[i][j] == 1){
+				var squareXLeft  = gridStartingX + j * spacingX ;
+				var squareXRight = gridStartingX + (j+1) * spacingX ;
+				var squareYUp = gridStartingY + i * spacingY ;
+				var squareYDown = gridStartingY + (i+1) * spacingY ;
+				xGrid.graphics.beginStroke('darkblue').setStrokeStyle(5).moveTo(squareXLeft,squareYUp).lineTo(squareXRight,squareYDown).
+				moveTo(squareXRight,squareYUp).lineTo(squareXLeft,squareYDown);
+   			}
+   		}
+   	}
+   	stage.addChild(xGrid);
+   	stage.update();
+   }
+
+
   function init(){
     console.clear();
     stage = new createjs.Stage("mainCanvas");
     stage.enableMouseOver();
     stage.on('click',function(event){
-    	console.log(event.stageX,event.stageY);
+    	for (var i=0; i<7; i++){
+    		for (var j=0; j<5; j++){
+    			if (inSquare(i,j,event.stageX,event.stageY)){
+    				twoInputData[i][j] = 1 - twoInputData[i][j];
+    				drawXGrid();
+    			}
+    		}
+    	}
     });
 
     statusText = new createjs.Text("Φόρτωση...", "20px Arial", "white");
@@ -220,17 +271,17 @@ function resize() {
 
 
   grid.graphics.clear();
+  gridStartingY = hmargin + weatherTargetHeight;
+  spacingY = daysTargetHeight + hmargin;
+  var startingY = gridStartingY;  	
   for (var i = 0; i < 7; i++){
-  	var startingY = hmargin + weatherTargetHeight;
-  	var startingX = hmargin;
-  	var spacing = daysTargetHeight + hmargin;
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX,startingY + i * spacing).lineTo(stage.canvas.width / 2 - hmargin,startingY + i *spacing).endStroke();
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(hmargin,startingY + i * spacingY).lineTo(stage.canvas.width / 2 - hmargin,startingY + i *spacingY).endStroke();
   }
+  gridStartingX = daysTargetWidth + 4 * hmargin;
+  spacingX = weatherTargetHeight + hmargin;
+  var startingX = gridStartingX;
   for (var i = 0; i < 5; i++){
-  	var startingY = hmargin;
-  	var startingX = daysTargetWidth + 4 * hmargin;
-  	spacing = weatherTargetHeight + hmargin;
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacing,startingY).lineTo(startingX + i * spacing,boxHeight + hmargin).endStroke();
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacingX,hmargin).lineTo(startingX + i * spacingX,boxHeight + hmargin).endStroke();
   }  	
   stage.addChild(grid);
 
