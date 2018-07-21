@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <!-- Using this metatag users can't scale the page using pinchIn/out gestures on mobile devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>Παιχνίδι μνήμης</title> 
+  <title>Πίνακας διπλής εισόδου (καιρός)</title> 
   <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
   <style type="text/css">
     /* Remove margins and HTML scrollbars */
@@ -128,7 +128,7 @@ function queueComplete(event) {
   	stage.addChild(weatherImgs[i]);
   }
 
-  for (var i=0; i<6; i++){
+  for (var i=0; i<7; i++){
   	daysImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('day0.png')+i]);
   	stage.addChild(daysImgs[i]);
   }
@@ -199,11 +199,13 @@ function resize() {
 
   var hmargin = 10 / 1120 * stage.canvas.width;
  
+
+  var boxHeight = stage.canvas.height - bbs - 5 * hmargin;
   whiteBox.graphics.clear();
   //shadow
-  whiteBox.graphics.beginFill('#222222').drawRoundRect(3/2*hmargin,3/2*hmargin,stage.canvas.width / 2 - 2*hmargin, stage.canvas.height - bbs - 3 * hmargin, hmargin);
+  whiteBox.graphics.beginFill('#222222').drawRoundRect(4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 2*hmargin, boxHeight, 2 * hmargin);
 
-  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 2*hmargin, stage.canvas.height - bbs - 3 * hmargin, hmargin);
+  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 2*hmargin, boxHeight, 2 * hmargin);
   
   stage.addChild(whiteBox);
 
@@ -212,23 +214,23 @@ function resize() {
   var weatherScale = weatherTargetWidth / weatherImgs[0].image.width;
   var weatherTargetHeight = weatherImgs[0].image.height * weatherScale;
 
-  var daysTargetWidth = 64 / 1120 * stage.canvas.width;
+  var daysTargetWidth = 52 / 1120 * stage.canvas.width;
   var daysScale = daysTargetWidth / daysImgs[0].image.width;
   var daysTargetHeight = daysImgs[0].image.height * daysScale;
 
 
   grid.graphics.clear();
   for (var i = 0; i < 7; i++){
-  	var startingY = 2 * hmargin + weatherTargetHeight;
+  	var startingY = hmargin + weatherTargetHeight;
   	var startingX = hmargin;
-  	var spacing = weatherTargetHeight - 0.6 * hmargin;
+  	var spacing = daysTargetHeight + hmargin;
 	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX,startingY + i * spacing).lineTo(stage.canvas.width / 2 - hmargin,startingY + i *spacing).endStroke();
   }
-  for (var i = 0; i < 6; i++){
+  for (var i = 0; i < 5; i++){
   	var startingY = hmargin;
-  	var startingX = daysTargetWidth + 3 * hmargin;
+  	var startingX = daysTargetWidth + 4 * hmargin;
   	spacing = weatherTargetHeight + hmargin;
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacing,startingY).lineTo(startingX + i * spacing,stage.canvas.height - bbs - 2 * hmargin).endStroke();
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacing,startingY).lineTo(startingX + i * spacing,boxHeight + hmargin).endStroke();
   }  	
   stage.addChild(grid);
 
@@ -242,7 +244,7 @@ function resize() {
   }
 
   
-  for (var i=0; i<6; i++){
+  for (var i=0; i<7; i++){
   	daysImgs[i].scaleX = daysScale;
   	daysImgs[i].scaleY = daysScale;
   	daysImgs[i].x = 2 * hmargin;
