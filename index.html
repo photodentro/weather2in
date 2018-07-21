@@ -35,7 +35,7 @@
   var stage;
   var resourceNames = ['bar_home.svg', 'bar_help.svg', 'bar_about.svg', 'bar_previous.svg', 'bar_next.svg', 'weather0.png',
   'weather1.png', 'weather2.png', 'weather3.png', 'weather4.png', 'day0.png', 'day1.png', 'day2.png', 'day3.png', 'day4.png', 
-  'day5.png', 'day6.png'];
+  'day5.png', 'day6.png', 'bar_chart.svg', 'clear.svg'];
   var resourcesLoaded = 0;
   var resources = [];
   var ratio = 16/9;
@@ -43,11 +43,11 @@
   var boxl;
   var boxr;
   var menubar = [];
-  var lvlText = "1";
-  var level = 0; 
   var bg;
   var statusText;
+  var hmargin;
   var whiteBox = new createjs.Shape();
+  var graphBox = new createjs.Shape();
   var grid = new createjs.Shape();
   var weatherImgs = [];
   var daysImgs = [];
@@ -63,8 +63,15 @@
   var gridStartingY;
   var spacingX;
   var spacingY;
+  var xGrid = new createjs.Shape(); // the grid of Xs
 
-  var xGrid = new createjs.Shape();
+  var barChartButton;
+  var barChart = new createjs.Shape();
+  var bcWeatherImgs = [];
+  var chartData;
+  var bcColors = ['yellow','green','blue','purple','red']
+  var clearButton;
+
 
   function inSquare(i,j,x,y){
 	var squareXLeft  = gridStartingX + j * spacingX;
@@ -100,6 +107,64 @@
    	stage.update();
    }
 
+
+   function countData(){
+   	 chartData = [0,0,0,0,0];
+   	 for (var j = 0; j < 5; j++){
+   	 	for (var i = 0; i < 7; i++){
+   	 		if (twoInputData[i][j] == 1){
+   	 			chartData[j] += 1;
+   	 		}
+   	 	}
+
+   	 }
+   }
+
+
+  function drawBarChart(){
+
+	  var weatherTargetWidth = 80 / 1120 * stage.canvas.width;
+	  var weatherScale = weatherTargetWidth / weatherImgs[0].image.width;
+	  var weatherTargetHeight = weatherImgs[0].image.height * weatherScale;
+
+	  var daysTargetWidth = 52 / 1120 * stage.canvas.width;
+	  var daysScale = daysTargetWidth / daysImgs[0].image.width;
+	  var daysTargetHeight = daysImgs[0].image.height * daysScale;
+
+	  var startingY = hmargin + weatherTargetHeight;  	
+	  barChart.graphics.clear();	  
+	/*for (var i = 0; i < 7; i++){
+		barChart.graphics.setStrokeStyle(2).beginStroke('black').moveTo(stage.canvas.width / 2 + hmargin,startingY + i * spacingY).lineTo(stage.canvas.width - 2 * hmargin,startingY + i *spacingY).endStroke();
+	  }
+	  var startingX = stage.canvas.width / 2 + daysTargetWidth + 4 * hmargin;
+	  for (var i = 0; i < 5; i++){
+		barChart.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacingX,hmargin).lineTo(startingX + i * spacingX,boxHeight + hmargin).endStroke();
+	  }
+	*/
+	  bbs = stage.canvas.height / 10;
+	  countData();
+	  for (var j=0; j < 5; j++){
+	  	var bcStartingX = stage.canvas.width / 2 + gridStartingX + spacingX / 2 + j*spacingX;
+	  	var bcStartingY = hmargin + (7-chartData[j])*spacingY;
+	  	var bcEndingY = stage.canvas.height - bbs - hmargin - 1.5*weatherTargetHeight;
+	  	if (chartData[j]){
+	  		barChart.graphics.setStrokeStyle(spacingY / 2).beginStroke(bcColors[j]).moveTo(bcStartingX,bcStartingY).lineTo(bcStartingX,bcEndingY).endStroke();
+	  	}
+	  	/*
+	  	barChart.graphics.setStrokeStyle(spacingY / 2).beginStroke('red').moveTo(stage.canvas.width / 2 + gridStartingX + (j+1/2) * spacingX, startingY).lineTo(stage.canvas.width / 2 + gridStartingX + (j+1/2) * spacingX, startingY - j * spacingY).endStroke();*/
+	  }
+
+
+	  for (var i=0; i<5; i++){
+  		bcWeatherImgs[i].scaleX = weatherScale;
+  		bcWeatherImgs[i].scaleY = weatherScale;
+  		bcWeatherImgs[i].x = stage.canvas.width / 2 + hmargin + (i+1)*(weatherTargetWidth+hmargin);
+  		bcWeatherImgs[i].y = stage.canvas.height - bbs - hmargin - 3/2 * weatherTargetHeight;
+  		stage.addChild(bcWeatherImgs[i]);
+  	  }
+
+	  stage.addChild(barChart);
+  }
 
   function init(){
     console.clear();
@@ -151,7 +216,7 @@ function queueComplete(event) {
   bg = new createjs.Shape();
   stage.addChild(bg);
   var onMenuClick = [onMenuHome, onMenuHelp, onMenuAbout, onMenuPrevious, onMenuNext];
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < 3; i++) {
     menubar[i] = new createjs.Bitmap(resources[resourceNames.indexOf('bar_home.svg') + i]);
     menubar[i].addEventListener("click", onMenuClick[i]);
     menubar[i].addEventListener("mouseover", function(event) {
@@ -169,20 +234,43 @@ function queueComplete(event) {
     stage.addChild(menubar[i]);
   }
 
-  lvlText = new createjs.Text("1", "20px Arial", "white");
-  lvlText.textAlign = "center";
-  lvlText.textBaseline = "middle";
-  stage.addChild(lvlText);
 
   for (var i=0; i<5; i++){
   	weatherImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('weather0.png')+i]);
+  	bcWeatherImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('weather0.png')+i]);
+  	stage.addChild(bcWeatherImgs[i]);
   	stage.addChild(weatherImgs[i]);
   }
+
+
 
   for (var i=0; i<7; i++){
   	daysImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('day0.png')+i]);
   	stage.addChild(daysImgs[i]);
   }
+
+  barChartButton = new createjs.Bitmap(imgByName('bar_chart.svg'));
+  barChartButton.addEventListener('click',function(){
+  	drawBarChart();
+  	stage.update();
+  });
+  stage.addChild(barChartButton);
+  clearButton = new createjs.Bitmap(imgByName('clear.svg'));
+  clearButton.addEventListener('click',function(){
+  	console.log("inhere");
+  	twoInputData = 
+    twoInputData = [[0,0,0,0,0],
+                    [0,0,0,0,0],
+                    [0,0,0,0,0],
+                    [0,0,0,0,0],
+                    [0,0,0,0,0],
+                    [0,0,0,0,0],
+                    [0,0,0,0,0]];
+  	drawXGrid();
+  	drawBarChart();
+  	stage.update();
+  });
+  stage.addChild(clearButton);
   stage.update();
   initLevel(0);
   resize();
@@ -203,7 +291,7 @@ function resize() {
     stage.canvas.height = stage.canvas.width / ratio;
   }
 
-  if (!menubar[4]) {
+  if (!menubar[0]) {
     statusText.x = stage.canvas.width / 2;
     statusText.y = stage.canvas.height / 2;
     statusText.font = parseInt(stage.canvas.height/10) + "px Arial";
@@ -214,7 +302,7 @@ function resize() {
   var bbs = stage.canvas.height / 10;  // bar button size
   var bbm = bbs / 5;  // bar button margin
   // TODO: local/global variables, eslint...
-  for (i = 0; i < 5; i++) {
+  for (i = 0; i < 3; i++) {
     // Leave one space for the level
     if (i < 4)
       j = i;
@@ -231,16 +319,6 @@ function resize() {
     menubar[i].savedscaleY = menubar[i].scaleY;
   }
 
-  lvlText.text = level + 1;
-  lvlText.x = (4 + 1)*bbm + bbs/2 + 4*bbs;
-  lvlText.y = stage.canvas.height - bbm/2 - bbs/2;
-  lvlText.font = parseInt(2*bbs/2) + "px Arial";
-
-  // If level is single digit, move lvlText and bar_previous a bit left
-  if (level + 1 < 10) {
-    lvlText.x -= bbs/4;
-    menubar[4].x -= bbs/2;
-  }
 
   
   // Bring statusText in front of everything
@@ -248,15 +326,15 @@ function resize() {
   statusText.textBaseline = "alphabetic";
   stage.setChildIndex(statusText, stage.numChildren - 1);
 
-  var hmargin = 10 / 1120 * stage.canvas.width;
+  hmargin = 10 / 1120 * stage.canvas.width;
  
 
   var boxHeight = stage.canvas.height - bbs - 5 * hmargin;
   whiteBox.graphics.clear();
   //shadow
-  whiteBox.graphics.beginFill('#222222').drawRoundRect(4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 2*hmargin, boxHeight, 2 * hmargin);
+  whiteBox.graphics.beginFill('#222222').drawRoundRect(4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
 
-  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 2*hmargin, boxHeight, 2 * hmargin);
+  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
   
   stage.addChild(whiteBox);
 
@@ -275,7 +353,7 @@ function resize() {
   spacingY = daysTargetHeight + hmargin;
   var startingY = gridStartingY;  	
   for (var i = 0; i < 7; i++){
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(hmargin,startingY + i * spacingY).lineTo(stage.canvas.width / 2 - hmargin,startingY + i *spacingY).endStroke();
+	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(hmargin,startingY + i * spacingY).lineTo(stage.canvas.width / 2 - 2 * hmargin,startingY + i *spacingY).endStroke();
   }
   gridStartingX = daysTargetWidth + 4 * hmargin;
   spacingX = weatherTargetHeight + hmargin;
@@ -302,9 +380,39 @@ function resize() {
   	daysImgs[i].y = 3 * hmargin + (i+1)*(daysTargetHeight+hmargin);
   	stage.addChild(daysImgs[i]);
   }
+  drawXGrid();
 
-  //grid.graphics.clear();
+  var scale = 50 / barChartButton.image.width;
+  barChartButton.scaleX = scale;
+  barChartButton.scaleY = scale;
+  barChartButton.regX = barChartButton.width / 2;
+  barChartButton.regY = barChartButton.height / 2;
+  barChartButton.x = 3 * stage.canvas.width / 4 + 5*hmargin;
+  barChartButton.y = stage.canvas.height - bbs;
 
+  scale = 50 / clearButton.image.width;
+  clearButton.scaleX = scale;
+  clearButton.scaleY = scale;
+  clearButton.regX = barChartButton.width / 2;
+  clearButton.regY = barChartButton.height / 2;
+  clearButton.x = 3 * stage.canvas.width / 4 - 5*hmargin;
+  clearButton.y = stage.canvas.height - bbs;
+
+
+
+
+  graphBox.graphics.clear();
+  //shadow
+  graphBox.graphics.beginFill('#222222').drawRoundRect(stage.canvas.width / 2 + 4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
+
+  graphBox.graphics.beginFill('white').drawRoundRect(stage.canvas.width / 2 + hmargin,hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
+  
+  stage.addChild(graphBox);
+
+
+  drawBarChart();
+
+  
   stage.update();
 }
 
