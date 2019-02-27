@@ -1,442 +1,74 @@
-<!doctype html> 
-<!-- Copyright (C) 2018 Alkis Georgopoulos <alkisg@gmail.com>. License: GPLv3. -->
-<html lang="el"> 
-<head> 
-  <meta charset="UTF-8" />
-  <!-- Using this metatag users can't scale the page using pinchIn/out gestures on mobile devices -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>Πίνακας διπλής εισόδου (καιρός)</title> 
-  <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
-  <style type="text/css">
-    /* Remove margins and HTML scrollbars */
-    body, html  {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: black;
-    }
-    #mainCanvas {
-    padding: 0;
-    margin: auto;
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    }
+<!doctype html>
+<!--
+Copyright (C) 2018 Alkis Georgopoulos <alkisg@gmail.com>.
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Πίνακας διπλής εισόδου (καιρός)</title>
+  <style>
+    /* Dummy style for animations */
   </style>
+  <link rel="stylesheet" type="text/css" href="activity.css">
+  <script>
+
+  </script>
+  <script src="activity.js"></script>
 </head>
-<body onload = "init();">
-  <canvas id="mainCanvas" width="320" height="180">
-    Your browser doesn't support HTML5!
-  </canvas>
-<script>
-  var stage;
-  var resourceNames = ['bar_home.svg', 'bar_help.svg', 'bar_about.svg', 'bar_previous.svg', 'bar_next.svg', 'weather0.png',
-  'weather1.png', 'weather2.png', 'weather3.png', 'weather4.png', 'day0.png', 'day1.png', 'day2.png', 'day3.png', 'day4.png', 
-  'day5.png', 'day6.png', 'bar_chart.svg', 'clear.svg'];
-  var resourcesLoaded = 0;
-  var resources = [];
-  var ratio = 16/9;
-  var winratio;
-  var boxl;
-  var boxr;
-  var menubar = [];
-  var bg;
-  var statusText;
-  var hmargin;
-  var whiteBox = new createjs.Shape();
-  var graphBox = new createjs.Shape();
-  var grid = new createjs.Shape();
-  var weatherImgs = [];
-  var daysImgs = [];
-  var twoInputData = [[0,0,0,0,0],
-                      [0,0,0,0,0],
-                      [0,0,0,0,0],
-                      [0,0,0,0,0],
-                      [0,0,0,0,0],
-                      [0,0,0,0,0],
-                      [0,0,0,0,0]];
-  //global to find stage click square
-  var gridStartingX;
-  var gridStartingY;
-  var spacingX;
-  var spacingY;
-  var xGrid = new createjs.Shape(); // the grid of Xs
+<body>
+<div id="main">
+  <div id = "inputTable">
+  	<div class="cell" id="i00"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i01"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i02"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i03"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i04"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i10"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i11"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i12"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i13"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i14"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i20"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i21"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i22"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i23"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i24"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i30"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i31"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i32"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i33"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i34"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i40"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i41"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i42"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i43"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i44"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i50"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i51"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i52"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i53"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i54"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i60"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i61"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i62"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i63"><img src="resource/checkmark.svg"/></div>
+    <div class="cell" id="i64"><img src="resource/checkmark.svg"/></div>
+  </div>
+  <div id="barchart">
+  	<svg id="bc" viwebox="0 0 22 21">
+  	</svg>
+  </div>
 
-  var barChartButton;
-  var barChart = new createjs.Shape();
-  var bcWeatherImgs = [];
-  var chartData;
-  var bcColors = ['yellow','green','blue','purple','red']
-  var clearButton;
-
-
-  function inSquare(i,j,x,y){
-	var squareXLeft  = gridStartingX + j * spacingX;
-	var squareXRight = gridStartingX + (j+1) * spacingX;
-	var squareYUp = gridStartingY + i * spacingY;
-	var squareYDown = gridStartingY + (i+1) * spacingY;
-	if ((x > squareXLeft) && 		
-		(x < squareXRight) && 		
-		(y > squareYUp)  && 		
-		(y < squareYDown)){
-			return(true);
-	}
-	else{
-		return(false);
-	}
-  }
-
-  function drawXGrid(){
-  	xGrid.graphics.clear();
-   	for (var i=0; i<7; i++){
-   		for (var j=0; j<5; j++){
-   			if (twoInputData[i][j] == 1){
-				var squareXLeft  = gridStartingX + j * spacingX ;
-				var squareXRight = gridStartingX + (j+1) * spacingX ;
-				var squareYUp = gridStartingY + i * spacingY ;
-				var squareYDown = gridStartingY + (i+1) * spacingY ;
-				xGrid.graphics.beginStroke('darkblue').setStrokeStyle(5).moveTo(squareXLeft,squareYUp).lineTo(squareXRight,squareYDown).
-				moveTo(squareXRight,squareYUp).lineTo(squareXLeft,squareYDown);
-   			}
-   		}
-   	}
-   	stage.addChild(xGrid);
-   	stage.update();
-   }
-
-
-   function countData(){
-   	 chartData = [0,0,0,0,0];
-   	 for (var j = 0; j < 5; j++){
-   	 	for (var i = 0; i < 7; i++){
-   	 		if (twoInputData[i][j] == 1){
-   	 			chartData[j] += 1;
-   	 		}
-   	 	}
-
-   	 }
-   }
-
-
-  function drawBarChart(){
-
-	  var weatherTargetWidth = 80 / 1120 * stage.canvas.width;
-	  var weatherScale = weatherTargetWidth / weatherImgs[0].image.width;
-	  var weatherTargetHeight = weatherImgs[0].image.height * weatherScale;
-
-	  var daysTargetWidth = 52 / 1120 * stage.canvas.width;
-	  var daysScale = daysTargetWidth / daysImgs[0].image.width;
-	  var daysTargetHeight = daysImgs[0].image.height * daysScale;
-
-	  var startingY = hmargin + weatherTargetHeight;  	
-	  barChart.graphics.clear();	  
-	/*for (var i = 0; i < 7; i++){
-		barChart.graphics.setStrokeStyle(2).beginStroke('black').moveTo(stage.canvas.width / 2 + hmargin,startingY + i * spacingY).lineTo(stage.canvas.width - 2 * hmargin,startingY + i *spacingY).endStroke();
-	  }
-	  var startingX = stage.canvas.width / 2 + daysTargetWidth + 4 * hmargin;
-	  for (var i = 0; i < 5; i++){
-		barChart.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacingX,hmargin).lineTo(startingX + i * spacingX,boxHeight + hmargin).endStroke();
-	  }
-	*/
-	  bbs = stage.canvas.height / 10;
-	  countData();
-	  for (var j=0; j < 5; j++){
-	  	var bcStartingX = stage.canvas.width / 2 + gridStartingX + spacingX / 2 + j*spacingX;
-	  	var bcStartingY = hmargin + (7-chartData[j])*spacingY;
-	  	var bcEndingY = stage.canvas.height - bbs - hmargin - 1.5*weatherTargetHeight;
-	  	if (chartData[j]){
-	  		barChart.graphics.setStrokeStyle(spacingY / 2).beginStroke(bcColors[j]).moveTo(bcStartingX,bcStartingY).lineTo(bcStartingX,bcEndingY).endStroke();
-	  	}
-	  	/*
-	  	barChart.graphics.setStrokeStyle(spacingY / 2).beginStroke('red').moveTo(stage.canvas.width / 2 + gridStartingX + (j+1/2) * spacingX, startingY).lineTo(stage.canvas.width / 2 + gridStartingX + (j+1/2) * spacingX, startingY - j * spacingY).endStroke();*/
-	  }
-
-
-	  for (var i=0; i<5; i++){
-  		bcWeatherImgs[i].scaleX = weatherScale;
-  		bcWeatherImgs[i].scaleY = weatherScale;
-  		bcWeatherImgs[i].x = stage.canvas.width / 2 + hmargin + (i+1)*(weatherTargetWidth+hmargin);
-  		bcWeatherImgs[i].y = stage.canvas.height - bbs - hmargin - 3/2 * weatherTargetHeight;
-  		stage.addChild(bcWeatherImgs[i]);
-  	  }
-
-	  stage.addChild(barChart);
-  }
-
-  function init(){
-    console.clear();
-    stage = new createjs.Stage("mainCanvas");
-    stage.enableMouseOver();
-    stage.on('click',function(event){
-    	for (var i=0; i<7; i++){
-    		for (var j=0; j<5; j++){
-    			if (inSquare(i,j,event.stageX,event.stageY)){
-    				twoInputData[i][j] = 1 - twoInputData[i][j];
-    				drawXGrid();
-    			}
-    		}
-    	}
-    });
-
-    statusText = new createjs.Text("Φόρτωση...", "20px Arial", "white");
-  	statusText.textAlign = "center";
-  	statusText.textBaseline = "middle";
-  	stage.addChild(statusText);
-  	resize();
-    // Resource preloading
-    for (var i = 0; i < resourceNames.length; i++) {
-
-      resources[i] = new Image();
-      resources[i].src = "resource/" + resourceNames[i];
-      resources[i].onload = queueFileLoad;
-
-    }
-    // The last queueFileLoad calls queueComplete. Execution continues there.
-
-  }
-
-function imgByName(name) {
-  return resources[resourceNames.indexOf(name)];
-}
-
-function queueFileLoad(event) {
-  resourcesLoaded++;
-  statusText.text = "Φόρτωση " + parseInt(100*resourcesLoaded/resourceNames.length) + " %";  
-  stage.update();
-  if (resourcesLoaded == resourceNames.length)  	
-    queueComplete(event);
-}
-
-function queueComplete(event) {
-  console.log("Finished loading resources");
-  statusText.visible = false;
-  bg = new createjs.Shape();
-  stage.addChild(bg);
-  var onMenuClick = [onMenuHome, onMenuHelp, onMenuAbout, onMenuPrevious, onMenuNext];
-  for (i = 0; i < 3; i++) {
-    menubar[i] = new createjs.Bitmap(resources[resourceNames.indexOf('bar_home.svg') + i]);
-    menubar[i].addEventListener("click", onMenuClick[i]);
-    menubar[i].addEventListener("mouseover", function(event) {
-      // Bring the target on top in its container, mostly for the rotation animation
-      event.target.parent.setChildIndex(event.target, event.target.parent.numChildren - 1);
-      event.target.scaleX = 1.2*event.target.savedscaleX;
-      event.target.scaleY = 1.2*event.target.savedscaleY;
-      stage.update();
-      });
-    menubar[i].addEventListener("mouseout", function(event) {
-      event.target.scaleX = event.target.savedscaleX;
-      event.target.scaleY = event.target.savedscaleY;
-      stage.update();
-      });
-    stage.addChild(menubar[i]);
-  }
-
-
-  for (var i=0; i<5; i++){
-  	weatherImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('weather0.png')+i]);
-  	bcWeatherImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('weather0.png')+i]);
-  	stage.addChild(bcWeatherImgs[i]);
-  	stage.addChild(weatherImgs[i]);
-  }
-
-
-
-  for (var i=0; i<7; i++){
-  	daysImgs[i] = new createjs.Bitmap(resources[resourceNames.indexOf('day0.png')+i]);
-  	stage.addChild(daysImgs[i]);
-  }
-
-  barChartButton = new createjs.Bitmap(imgByName('bar_chart.svg'));
-  barChartButton.addEventListener('click',function(){
-  	drawBarChart();
-  	stage.update();
-  });
-  stage.addChild(barChartButton);
-  clearButton = new createjs.Bitmap(imgByName('clear.svg'));
-  clearButton.addEventListener('click',function(){
-  	console.log("inhere");
-  	twoInputData = 
-    twoInputData = [[0,0,0,0,0],
-                    [0,0,0,0,0],
-                    [0,0,0,0,0],
-                    [0,0,0,0,0],
-                    [0,0,0,0,0],
-                    [0,0,0,0,0],
-                    [0,0,0,0,0]];
-  	drawXGrid();
-  	drawBarChart();
-  	stage.update();
-  });
-  stage.addChild(clearButton);
-  stage.update();
-  initLevel(0);
-  resize();
-  window.addEventListener('resize', resize, false);
-}
-
-function initLevel(newLevel) {
-}
-
-function resize() {
-  // Resize the canvas element
-  winratio = window.innerWidth/window.innerHeight;
-  if (winratio >= ratio) {
-    stage.canvas.height = window.innerHeight;
-    stage.canvas.width = stage.canvas.height * ratio;
-  } else {
-    stage.canvas.width = window.innerWidth;
-    stage.canvas.height = stage.canvas.width / ratio;
-  }
-
-  if (!menubar[0]) {
-    statusText.x = stage.canvas.width / 2;
-    statusText.y = stage.canvas.height / 2;
-    statusText.font = parseInt(stage.canvas.height/10) + "px Arial";
-    return;
-  }
-  // Fill all the canvas with the background
-  bg.graphics.beginFill("#970A5F").drawRect(0,0,stage.canvas.width,stage.canvas.height);
-  var bbs = stage.canvas.height / 10;  // bar button size
-  var bbm = bbs / 5;  // bar button margin
-  // TODO: local/global variables, eslint...
-  for (i = 0; i < 3; i++) {
-    // Leave one space for the level
-    if (i < 4)
-      j = i;
-    else
-      j = i + 1;
-    menubar[i].scaleX = bbs / menubar[i].image.width;
-    menubar[i].scaleY = bbs / menubar[i].image.height;
-    menubar[i].regX = menubar[i].image.width / 2;
-    menubar[i].regY = menubar[i].image.height / 2;
-    menubar[i].x = (j + 1)*bbm + bbs/2 + j*bbs;
-    menubar[i].y = stage.canvas.height - bbm - bbs/2;
-    // These copies are used to preserve the original scale on mouseover
-    menubar[i].savedscaleX = menubar[i].scaleX;
-    menubar[i].savedscaleY = menubar[i].scaleY;
-  }
-
-
-  
-  // Bring statusText in front of everything
-  statusText.textAlign = "right";
-  statusText.textBaseline = "alphabetic";
-  stage.setChildIndex(statusText, stage.numChildren - 1);
-
-  hmargin = 10 / 1120 * stage.canvas.width;
- 
-
-  var boxHeight = stage.canvas.height - bbs - 5 * hmargin;
-  whiteBox.graphics.clear();
-  //shadow
-  whiteBox.graphics.beginFill('#222222').drawRoundRect(4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
-
-  whiteBox.graphics.beginFill('white').drawRoundRect(hmargin,hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
-  
-  stage.addChild(whiteBox);
-
-
-  var weatherTargetWidth = 80 / 1120 * stage.canvas.width;
-  var weatherScale = weatherTargetWidth / weatherImgs[0].image.width;
-  var weatherTargetHeight = weatherImgs[0].image.height * weatherScale;
-
-  var daysTargetWidth = 52 / 1120 * stage.canvas.width;
-  var daysScale = daysTargetWidth / daysImgs[0].image.width;
-  var daysTargetHeight = daysImgs[0].image.height * daysScale;
-
-
-  grid.graphics.clear();
-  gridStartingY = hmargin + weatherTargetHeight;
-  spacingY = daysTargetHeight + hmargin;
-  var startingY = gridStartingY;  	
-  for (var i = 0; i < 7; i++){
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(hmargin,startingY + i * spacingY).lineTo(stage.canvas.width / 2 - 2 * hmargin,startingY + i *spacingY).endStroke();
-  }
-  gridStartingX = daysTargetWidth + 4 * hmargin;
-  spacingX = weatherTargetHeight + hmargin;
-  var startingX = gridStartingX;
-  for (var i = 0; i < 5; i++){
-	grid.graphics.setStrokeStyle(2).beginStroke('black').moveTo(startingX + i * spacingX,hmargin).lineTo(startingX + i * spacingX,boxHeight + hmargin).endStroke();
-  }  	
-  stage.addChild(grid);
-
-  
-  for (var i=0; i<5; i++){
-  	weatherImgs[i].scaleX = weatherScale;
-  	weatherImgs[i].scaleY = weatherScale;
-  	weatherImgs[i].x = hmargin + (i+1)*(weatherTargetWidth+hmargin);
-  	weatherImgs[i].y = hmargin;
-  	stage.addChild(weatherImgs[i]);
-  }
-
-  
-  for (var i=0; i<7; i++){
-  	daysImgs[i].scaleX = daysScale;
-  	daysImgs[i].scaleY = daysScale;
-  	daysImgs[i].x = 2 * hmargin;
-  	daysImgs[i].y = 3 * hmargin + (i+1)*(daysTargetHeight+hmargin);
-  	stage.addChild(daysImgs[i]);
-  }
-  drawXGrid();
-
-  var scale = 50 / barChartButton.image.width;
-  barChartButton.scaleX = scale;
-  barChartButton.scaleY = scale;
-  barChartButton.regX = barChartButton.width / 2;
-  barChartButton.regY = barChartButton.height / 2;
-  barChartButton.x = 3 * stage.canvas.width / 4;
-  barChartButton.y = stage.canvas.height - bbs;
-
-  scale = 50 / clearButton.image.width;
-  clearButton.scaleX = scale;
-  clearButton.scaleY = scale;
-  clearButton.regX = barChartButton.width / 2;
-  clearButton.regY = barChartButton.height / 2;
-  clearButton.x = 1 * stage.canvas.width / 4 ;
-  clearButton.y = stage.canvas.height - bbs;
-
-
-
-
-  graphBox.graphics.clear();
-  //shadow
-  graphBox.graphics.beginFill('#222222').drawRoundRect(stage.canvas.width / 2 + 4/2*hmargin,4/2*hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
-
-  graphBox.graphics.beginFill('white').drawRoundRect(stage.canvas.width / 2 + hmargin,hmargin,stage.canvas.width / 2 - 3*hmargin, boxHeight, 2 * hmargin);
-  
-  stage.addChild(graphBox);
-
-
-  drawBarChart();
-
-  
-  stage.update();
-}
-
-
-function onMenuHelp(event) {
-  alert("Κάντε κλικ στον πίνακα και μετά πατήστε το κουμπί για το γράφημα.");
-}
-
-function onMenuHome(event) {
-  window.history.back();
-}
-
-function onMenuPrevious(event) {
-  initLevel((level+4) % 5);
-}
-
-function onMenuNext(event) {
-  initLevel((level+1) % 5);
-}
-
-function onMenuAbout(event) {
-  window.open("credits/index_DS_II.html");
-}
-
-</script>
+  <div id="menubar">
+    <img id="bar_home" src="resource/bar_home.svg" alt="Αρχική" title="Επιστροφή στην αρχική σελίδα">
+    <img id="bar_help" src="resource/bar_help.svg" alt="Βοήθεια" title="Βοήθεια">
+    <img id="bar_about" src="resource/bar_about.svg" alt="Περί" title="Περί">
+    <img id="bar_fullscreen" src="resource/bar_fullscreen.svg" alt="Πλήρης οθόνη" title="Πλήρης οθόνη">
+    <img id="bar_reset" src="resource/bar_reset.svg" alt="Επανεκκίνηση" title="Επανεκκίνηση">
+    <img id="bar_graph" src="resource/bar_graph.svg" alt="Ραβδόγραμμα" title="Ραβδόγραμμα">
+  </div>
+</div>  
+<div id="help"><div class="dialog">Συμπληρώστε τον καιρό της εβδομάδας στο αριστερό μέρος και πατήστε το κουμπί για το ραβδόγραμμα.</div>
 </body>
 </html>

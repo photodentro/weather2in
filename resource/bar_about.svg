@@ -1,100 +1,51 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="66"
-   height="66"
-   id="svg4211"
-   version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="bar_about.svg">
-  <defs
-     id="defs4213" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#8d8d8d"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="11.2"
-     inkscape:cx="38.099947"
-     inkscape:cy="32.959518"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1024"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     showguides="false" />
-  <metadata
-     id="metadata4216">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-        <dc:date>2015</dc:date>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Timothée Giet</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:requires
-           rdf:resource="http://creativecommons.org/ns#Notice" />
-        <cc:requires
-           rdf:resource="http://creativecommons.org/ns#Attribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-        <cc:requires
-           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Calque 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-341.9925,-499.36546)">
-    <path
-       sodipodi:nodetypes="sssss"
-       inkscape:connector-curvature="0"
-       style="fill:#53b9c9;fill-opacity:1;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 374.99695,500.36211 c -17.6638,0 -31.997,14.33934 -31.997,32.00314 0,17.66381 14.3332,31.997 31.997,31.99701 17.6638,0 32.0031,-14.3332 32.0031,-31.99701 0,-17.6638 -14.3393,-32.00314 -32.0031,-32.00314 z"
-       id="path3726" />
-    <path
-       style="fill:#ffffff;stroke-width:0.57981229;fill-opacity:1"
-       inkscape:connector-curvature="0"
-       id="path4"
-       d="m 379.84896,516.35909 a 5.0222679,5.7255302 0 1 1 -10.04453,0 5.0222679,5.7255281 0 1 1 10.04453,0 z" />
-    <path
-       style="fill:#ffffff;stroke-width:0.4766539;fill-opacity:1"
-       inkscape:connector-curvature="0"
-       id="path6"
-       d="m 380.14651,546.74668 c -0.0308,1.38937 0.54063,1.78124 1.9317,1.9441 l 2.23571,0.0509 v 2.6057 h -17.4433 v -2.6057 l 2.4567,-0.0509 c 1.46919,-0.0509 1.82232,-0.70232 1.93169,-1.9441 v -15.68152 c 0.0156,-2.48305 -2.81071,-2.09322 -4.80223,-2.01942 v -2.58229 l 13.68973,-0.56236" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" width="97px" height="97px" viewBox="0 0 97 97">
+<defs>
+<g id="Symbol_13_copy_2_0_Layer1_0_FILL">
+<path fill="#FFFFFF" stroke="none" d="
+M 76.4 36.45
+Q 76.4296875 19.887109375 64.7 8.15 53.0150390625 -3.5275390625 36.45 -3.55 19.9005859375 -3.52578125 8.15 8.15
+L 8.15 8.15
+Q -3.52578125 19.9005859375 -3.55 36.45 -3.5275390625 53.0150390625 8.15 64.7 19.887109375 76.4296875 36.45 76.4 52.9982421875 76.4189453125 64.65 64.7
+L 64.7 64.65
+Q 76.4189453125 52.9982421875 76.4 36.45
+M 59.7 13.15
+Q 69.3701171875 22.8126953125 69.35 36.45 69.380859375 50.0841796875 59.7 59.7
+L 59.7 59.7
+Q 50.0841796875 69.380859375 36.45 69.35 22.8126953125 69.3701171875 13.15 59.7 3.5271484375 50.0845703125 3.5 36.45 3.52578125 22.8171875 13.1 13.15
+L 13.15 13.1
+Q 22.8171875 3.52578125 36.45 3.5 50.0845703125 3.5271484375 59.7 13.15 Z"/>
+
+<path fill="#53BAC8" stroke="none" d="
+M 69.35 36.45
+Q 69.3701171875 22.8126953125 59.7 13.15 50.0845703125 3.5271484375 36.45 3.5 22.8171875 3.52578125 13.15 13.1
+L 13.1 13.15
+Q 3.52578125 22.8171875 3.5 36.45 3.5271484375 50.0845703125 13.15 59.7 22.8126953125 69.3701171875 36.45 69.35 50.0841796875 69.380859375 59.7 59.7
+L 59.7 59.7
+Q 69.380859375 50.0841796875 69.35 36.45 Z"/>
+</g>
+
+<g id="Symbol_13_copy_2_0_Layer0_0_FILL">
+<path fill="#FFF6FF" stroke="none" d="
+M 44.95 16.4
+Q 44.95 13.25 42.7 10.95 40.4 8.65 37.2 8.65 34 8.65 31.75 10.95 29.5 13.25 29.5 16.4 29.5 19.6 31.75 21.8 34 24.2 37.2 24.2 40.4 24.2 42.7 21.8 44.95 19.6 44.95 16.4
+M 43.65 34.3
+Q 43.65 31.65 41.75 29.7 39.85 27.8 37.2 27.8 34.55 27.8 32.6 29.7 30.7 31.65 30.7 34.3
+L 30.7 58.2
+Q 30.7 60.75 32.6 62.65 34.55 64.65 37.2 64.65 39.85 64.65 41.75 62.65 43.65 60.75 43.65 58.2
+L 43.65 34.3 Z"/>
+</g>
+</defs>
+
+<g transform="matrix( 1, 0, 0, 1, 1,0) ">
+<g transform="matrix( 1.205169677734375, 0, 0, 1.205169677734375, 4.2,4.2) ">
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Symbol_13_copy_2_0_Layer1_0_FILL"/>
+</g>
+
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Symbol_13_copy_2_0_Layer0_0_FILL"/>
+</g>
+</g>
+</g>
 </svg>
