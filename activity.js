@@ -134,17 +134,32 @@ function drawBC(){
   }
 }
 
-function cellIndex(obj){
-  rowString = obj.id[1];
-  row = parseInt(rowString);
-  colString = obj.id[2];
-  col = parseInt(colString);
-  return([row,col])
+function cellIndex(obj,isImage){
+  if (isImage){
+    rowString = obj.id[2];
+    row = parseInt(rowString);
+    colString = obj.id[3];
+    col = parseInt(colString);
+    return([row,col]);
+  }
+  else{
+    rowString = obj.id[1];
+    row = parseInt(rowString);
+    colString = obj.id[2];
+    col = parseInt(colString);
+    return([row,col]);
+  }
 }
 
 function cellClick(event){
-  console.log(act.weather);
-  var cellij = cellIndex(event.target);
+  var cellij;
+  if (event.target.tagName.toUpperCase() == 'IMG'){
+    cellij = cellIndex(event.target,true);
+  }
+  else{
+    cellij = cellIndex(event.target,false);
+  }
+
   var i = cellij[0];
   var j = cellij[1];
   if (act.weather[i][j] == 1){
@@ -158,7 +173,7 @@ function cellClick(event){
         act.cells[i][k].innerHTML = "";
       }
     }
-    act.cells[i][j].innerHTML = "<img src='resource/checkmark.svg'/>";
+    act.cells[i][j].innerHTML = sformat("<img id='im{}{}' src='resource/checkmark.svg'/>",i,j);
     act.weather[i][j] = 1;
   }
 }
